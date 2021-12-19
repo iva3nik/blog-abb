@@ -1,4 +1,6 @@
 import './styles.css'
+import "core-js/stable"
+import "regenerator-runtime/runtime"
 
 import { HeaderComponent } from './components/header.component'
 import { NavigationComponent } from './components/navigation.component'
