@@ -1,2 +1,5 @@
 import './styles.css'
-console.log('Started')
+
+import { HeaderComponent } from './components/header.component'
+const header = new HeaderComponent('header')
+console.log(header)
