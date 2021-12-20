@@ -8,6 +8,10 @@ export class PostsComponent extends Component {
     this.loader = loader
   }
 
+  init() {
+    this.$el.addEventListener('click', buttonHandler.bind(this))
+  }
+
   async onShow() {
     this.loader.show()
     const fbData = await apiService.fetchPosts()
@@ -28,7 +32,9 @@ function renderPost(post) {
     ? `<li class="tag tag-blue tag-rounded">News</li>`
     : `<li class="tag tag-rounded">Note</li>`
 
-  const button = '<button class="button-round button-small button-primary">Save</button>'
+  const button = (JSON.parse(localStorage.getItem('favorites')) || []).includes(post.id)
+   ? `<button data-id="${post.id}" class="button-round button-small button-danger">Delete</button>`
+   : `<button data-id="${post.id}" class="button-round button-small button-primary">Save</button>`
 
   return `
     <div class="panel">
@@ -47,4 +53,29 @@ function renderPost(post) {
       </div>
     </div>
   `
+}
+
+function buttonHandler(event) {
+  const $el = event.target
+  const id = $el.dataset.id
+
+  if (id) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || []
+
+    if (favorites.includes(id)) {
+      $el.textContent = 'Save'
+      $el.classList.add('button-primary')
+      $el.classList.remove('button-danger')
+
+      favorites = favorites.filter(fId => fId !== id)
+    } else {
+      $el.textContent = 'Delete'
+      $el.classList.add('button-danger')
+      $el.classList.remove('button-primary')
+
+      favorites.push(id)
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+  }
 }
